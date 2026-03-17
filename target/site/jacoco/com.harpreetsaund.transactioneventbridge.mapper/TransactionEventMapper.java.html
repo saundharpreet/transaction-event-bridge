@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionEventMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">transaction-event-bridge</a> &gt; <a href="index.source.html" class="el_package">com.harpreetsaund.transactioneventbridge.mapper</a> &gt; <span class="el_source">TransactionEventMapper.java</span></div><h1>TransactionEventMapper.java</h1><pre class="source lang-java linenums">package com.harpreetsaund.transactioneventbridge.mapper;
+
+import com.harpreetsaund.transactioneventbridge.model.MqTransactionEvent;
+import com.harpreetsaund.transaction.avro.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+@Component
+<span class="fc" id="L18">public class TransactionEventMapper {</span>
+
+<span class="fc" id="L20">    private static final Logger logger = LoggerFactory.getLogger(TransactionEventMapper.class);</span>
+
+<span class="fc" id="L22">    private static final DateTimeFormatter INBOUND_DATETIME_FORMATTER = DateTimeFormatter.ofPattern(&quot;yyyyMMddHHmmss&quot;);</span>
+
+    @Value(&quot;${outbound-channel.topic-name}&quot;)
+    private String outboundTopicName;
+
+    public MqTransactionEvent toMqTransactionEvent(String payload) {
+<span class="fc" id="L28">        logger.debug(&quot;Mapping payload {} to MqTransactionEvent&quot;, payload);</span>
+
+<span class="fc" id="L30">        MqTransactionEvent mqTransactionEvent = new MqTransactionEvent();</span>
+<span class="fc" id="L31">        mqTransactionEvent.setRecordType(payload.substring(0, 3).trim());</span>
+<span class="fc" id="L32">        mqTransactionEvent.setTransactionId(payload.substring(3, 13).trim());</span>
+<span class="fc" id="L33">        mqTransactionEvent.setAccountNumber(payload.substring(13, 23).trim());</span>
+<span class="fc" id="L34">        mqTransactionEvent.setTransactionType(payload.substring(23, 24));</span>
+<span class="fc" id="L35">        mqTransactionEvent.setAmount(new BigDecimal(payload.substring(24, 34).trim()));</span>
+<span class="fc" id="L36">        mqTransactionEvent.setCurrency(payload.substring(34, 37).trim());</span>
+<span class="fc" id="L37">        mqTransactionEvent.setTimestamp(payload.substring(37, 51).trim());</span>
+<span class="fc" id="L38">        mqTransactionEvent.setMerchantName(payload.substring(51, 66).trim());</span>
+<span class="fc" id="L39">        mqTransactionEvent.setChannel(payload.substring(66, 69).trim());</span>
+
+<span class="fc" id="L41">        return mqTransactionEvent;</span>
+    }
+
+    public TransactionEvent toTransactionEvent(MqTransactionEvent mqTransactionEvent) {
+<span class="fc" id="L45">        logger.debug(&quot;Mapping MqTransactionEvent {} to TransactionEvent&quot;, mqTransactionEvent);</span>
+
+<span class="fc" id="L47">        EventHeaders eventHeaders = new EventHeaders();</span>
+<span class="fc" id="L48">        eventHeaders.setEventId(UUID.randomUUID().toString());</span>
+<span class="fc" id="L49">        eventHeaders.setEventType(&quot;EodTransactionEvent&quot;);</span>
+<span class="fc" id="L50">        eventHeaders.setEventTimestamp(Instant.now());</span>
+<span class="fc" id="L51">        eventHeaders.setSourceSystem(&quot;SFTP&quot;);</span>
+<span class="fc" id="L52">        eventHeaders.setTargetSystem(&quot;Kafka&quot;);</span>
+<span class="fc" id="L53">        eventHeaders.setTopicName(outboundTopicName);</span>
+<span class="fc" id="L54">        eventHeaders.setPayloadSchemaVersion(&quot;1&quot;);</span>
+
+<span class="fc" id="L56">        EventPayload eventPayload = new EventPayload();</span>
+<span class="fc" id="L57">        eventPayload.setTransactionId(mqTransactionEvent.getTransactionId());</span>
+<span class="fc" id="L58">        eventPayload.setAccountNumber(mqTransactionEvent.getAccountNumber());</span>
+<span class="fc" id="L59">        eventPayload.setTransactionType(mapTransactionType(mqTransactionEvent.getTransactionType()));</span>
+<span class="fc" id="L60">        eventPayload.setAmount(mqTransactionEvent.getAmount().doubleValue());</span>
+<span class="fc" id="L61">        eventPayload.setCurrency(mapCurrency(mqTransactionEvent.getCurrency()));</span>
+<span class="fc" id="L62">        eventPayload.setTransactionTimestamp(mapTimestamp(mqTransactionEvent.getTimestamp()));</span>
+<span class="fc" id="L63">        eventPayload.setMerchantName(mqTransactionEvent.getMerchantName());</span>
+<span class="fc" id="L64">        eventPayload.setChannel(mapChannel(mqTransactionEvent.getChannel()));</span>
+
+<span class="fc" id="L66">        TransactionEvent transactionEvent = new TransactionEvent();</span>
+<span class="fc" id="L67">        transactionEvent.setHeaders(eventHeaders);</span>
+<span class="fc" id="L68">        transactionEvent.setPayload(eventPayload);</span>
+
+<span class="fc" id="L70">        return transactionEvent;</span>
+    }
+
+    public TransactionType mapTransactionType(String transactionType) {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (transactionType == null) {</span>
+<span class="fc" id="L75">            throw new IllegalArgumentException(&quot;Transaction type cannot be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L78" title="All 3 branches covered.">        return switch (transactionType.toUpperCase()) {</span>
+<span class="fc" id="L79">        case &quot;D&quot; -&gt; TransactionType.DEBIT;</span>
+<span class="fc" id="L80">        case &quot;C&quot; -&gt; TransactionType.CREDIT;</span>
+<span class="fc" id="L81">        default -&gt; throw new IllegalArgumentException(&quot;Unknown transaction type: &quot; + transactionType);</span>
+        };
+    }
+
+    public Currency mapCurrency(String currency) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (currency == null) {</span>
+<span class="fc" id="L87">            throw new IllegalArgumentException(&quot;Currency cannot be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L90" title="All 5 branches covered.">        return switch (currency.toUpperCase()) {</span>
+<span class="fc" id="L91">        case &quot;CAD&quot; -&gt; Currency.CAD;</span>
+<span class="fc" id="L92">        case &quot;USD&quot; -&gt; Currency.USD;</span>
+<span class="fc" id="L93">        case &quot;EUR&quot; -&gt; Currency.EUR;</span>
+<span class="fc" id="L94">        case &quot;GBP&quot; -&gt; Currency.GBP;</span>
+<span class="fc" id="L95">        default -&gt; throw new IllegalArgumentException(&quot;Unknown currency: &quot; + currency);</span>
+        };
+    }
+
+    public Instant mapTimestamp(String timestamp) {
+<span class="fc" id="L100">        LocalDateTime dateTime = LocalDateTime.parse(timestamp, INBOUND_DATETIME_FORMATTER);</span>
+<span class="fc" id="L101">        return dateTime.toInstant(ZoneOffset.UTC);</span>
+    }
+
+    public Channel mapChannel(String channel) {
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (channel == null) {</span>
+<span class="fc" id="L106">            throw new IllegalArgumentException(&quot;Channel cannot be null&quot;);</span>
+        }
+
+<span class="fc bfc" id="L109" title="All 6 branches covered.">        return switch (channel.toUpperCase()) {</span>
+<span class="fc" id="L110">        case &quot;ATM&quot; -&gt; Channel.ATM;</span>
+<span class="fc" id="L111">        case &quot;POS&quot; -&gt; Channel.POS;</span>
+<span class="fc" id="L112">        case &quot;ONL&quot; -&gt; Channel.ONLINE;</span>
+<span class="fc" id="L113">        case &quot;MOB&quot; -&gt; Channel.MOBILE;</span>
+<span class="fc" id="L114">        case &quot;ETR&quot; -&gt; Channel.ETRANSFER;</span>
+<span class="fc" id="L115">        default -&gt; throw new IllegalArgumentException(&quot;Unknown channel: &quot; + channel);</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

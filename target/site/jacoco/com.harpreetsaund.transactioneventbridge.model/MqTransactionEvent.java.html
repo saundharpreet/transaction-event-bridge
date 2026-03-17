@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MqTransactionEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">transaction-event-bridge</a> &gt; <a href="index.source.html" class="el_package">com.harpreetsaund.transactioneventbridge.model</a> &gt; <span class="el_source">MqTransactionEvent.java</span></div><h1>MqTransactionEvent.java</h1><pre class="source lang-java linenums">package com.harpreetsaund.transactioneventbridge.model;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.math.BigDecimal;
+
+<span class="fc" id="L7">public class MqTransactionEvent {</span>
+
+    private String recordType;
+    private String transactionId;
+    private String accountNumber;
+    private String transactionType;
+    private BigDecimal amount;
+    private String currency;
+    private String timestamp;
+    private String merchantName;
+    private String channel;
+
+    public String getRecordType() {
+<span class="fc" id="L20">        return recordType;</span>
+    }
+
+    public void setRecordType(String recordType) {
+<span class="fc" id="L24">        this.recordType = recordType;</span>
+<span class="fc" id="L25">    }</span>
+
+    public String getTransactionId() {
+<span class="fc" id="L28">        return transactionId;</span>
+    }
+
+    public void setTransactionId(String transactionId) {
+<span class="fc" id="L32">        this.transactionId = transactionId;</span>
+<span class="fc" id="L33">    }</span>
+
+    public String getAccountNumber() {
+<span class="fc" id="L36">        return accountNumber;</span>
+    }
+
+    public void setAccountNumber(String accountNumber) {
+<span class="fc" id="L40">        this.accountNumber = accountNumber;</span>
+<span class="fc" id="L41">    }</span>
+
+    public String getTransactionType() {
+<span class="fc" id="L44">        return transactionType;</span>
+    }
+
+    public void setTransactionType(String transactionType) {
+<span class="fc" id="L48">        this.transactionType = transactionType;</span>
+<span class="fc" id="L49">    }</span>
+
+    public BigDecimal getAmount() {
+<span class="fc" id="L52">        return amount;</span>
+    }
+
+    public void setAmount(BigDecimal amount) {
+<span class="fc" id="L56">        this.amount = amount;</span>
+<span class="fc" id="L57">    }</span>
+
+    public String getCurrency() {
+<span class="fc" id="L60">        return currency;</span>
+    }
+
+    public void setCurrency(String currency) {
+<span class="fc" id="L64">        this.currency = currency;</span>
+<span class="fc" id="L65">    }</span>
+
+    public String getTimestamp() {
+<span class="fc" id="L68">        return timestamp;</span>
+    }
+
+    public void setTimestamp(String timestamp) {
+<span class="fc" id="L72">        this.timestamp = timestamp;</span>
+<span class="fc" id="L73">    }</span>
+
+    public String getMerchantName() {
+<span class="fc" id="L76">        return merchantName;</span>
+    }
+
+    public void setMerchantName(String merchantName) {
+<span class="fc" id="L80">        this.merchantName = merchantName;</span>
+<span class="fc" id="L81">    }</span>
+
+    public String getChannel() {
+<span class="fc" id="L84">        return channel;</span>
+    }
+
+    public void setChannel(String channel) {
+<span class="fc" id="L88">        this.channel = channel;</span>
+<span class="fc" id="L89">    }</span>
+
+    @Override
+    public String toString() {
+<span class="fc" id="L93">        return new ToStringBuilder(this).append(&quot;recordType&quot;, recordType).append(&quot;transactionId&quot;, transactionId)</span>
+<span class="fc" id="L94">                .append(&quot;accountNumber&quot;, accountNumber).append(&quot;transactionType&quot;, transactionType)</span>
+<span class="fc" id="L95">                .append(&quot;amount&quot;, amount).append(&quot;currency&quot;, currency).append(&quot;timestamp&quot;, timestamp)</span>
+<span class="fc" id="L96">                .append(&quot;merchantName&quot;, merchantName).append(&quot;channel&quot;, channel).toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

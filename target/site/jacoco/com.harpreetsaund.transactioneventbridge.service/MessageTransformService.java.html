@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MessageTransformService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">transaction-event-bridge</a> &gt; <a href="index.source.html" class="el_package">com.harpreetsaund.transactioneventbridge.service</a> &gt; <span class="el_source">MessageTransformService.java</span></div><h1>MessageTransformService.java</h1><pre class="source lang-java linenums">package com.harpreetsaund.transactioneventbridge.service;
+
+import com.harpreetsaund.transactioneventbridge.mapper.TransactionEventMapper;
+import com.harpreetsaund.transactioneventbridge.model.MqTransactionEvent;
+import com.harpreetsaund.transaction.avro.TransactionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MessageTransformService {
+
+<span class="fc" id="L17">    private static final Logger logger = LoggerFactory.getLogger(MessageTransformService.class);</span>
+
+    private final TransactionEventMapper transactionEventMapper;
+
+<span class="fc" id="L21">    public MessageTransformService(TransactionEventMapper transactionEventMapper) {</span>
+<span class="fc" id="L22">        this.transactionEventMapper = transactionEventMapper;</span>
+<span class="fc" id="L23">    }</span>
+
+    @Transformer
+    public Message&lt;MqTransactionEvent&gt; transformToMqTransactionEvent(Message&lt;String&gt; inboundMessage) {
+<span class="fc" id="L27">        logger.debug(&quot;Transforming inbound message {} to MqTransactionEvent&quot;, inboundMessage);</span>
+
+<span class="fc" id="L29">        String payload = inboundMessage.getPayload();</span>
+<span class="fc" id="L30">        MqTransactionEvent mqTransactionEvent = transactionEventMapper.toMqTransactionEvent(payload);</span>
+
+<span class="fc" id="L32">        return MessageBuilder.withPayload(mqTransactionEvent).copyHeaders(inboundMessage.getHeaders()).build();</span>
+    }
+
+    @Transformer
+    public Message&lt;TransactionEvent&gt; transformToTransactionEvent(Message&lt;MqTransactionEvent&gt; inboundMessage) {
+<span class="fc" id="L37">        logger.debug(&quot;Transforming MqTransactionEvent message {} to TransactionEvent&quot;, inboundMessage);</span>
+
+<span class="fc" id="L39">        MqTransactionEvent mqTransactionEvent = inboundMessage.getPayload();</span>
+<span class="fc" id="L40">        TransactionEvent transactionEvent = transactionEventMapper.toTransactionEvent(mqTransactionEvent);</span>
+
+<span class="fc" id="L42">        return MessageBuilder.withPayload(transactionEvent).copyHeaders(inboundMessage.getHeaders())</span>
+<span class="fc" id="L43">                .setHeader(KafkaHeaders.KEY, transactionEvent.getPayload().getTransactionId()).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
