@@ -1,5 +1,0 @@
-/Users/harpreetsaund/intellij-workspace/banking-event-platform/transaction-event-bridge/src/test/java/com/harpreetsaund/transactioneventbridge/TransactionEventBridgeApplicationTests.java
-/Users/harpreetsaund/intellij-workspace/banking-event-platform/transaction-event-bridge/src/test/java/com/harpreetsaund/transactioneventbridge/mapper/TransactionEventMapperTest.java
-/Users/harpreetsaund/intellij-workspace/banking-event-platform/transaction-event-bridge/src/test/java/com/harpreetsaund/transactioneventbridge/model/MqTransactionEventTest.java
-/Users/harpreetsaund/intellij-workspace/banking-event-platform/transaction-event-bridge/src/test/java/com/harpreetsaund/transactioneventbridge/service/MessageFilterServiceTest.java
-/Users/harpreetsaund/intellij-workspace/banking-event-platform/transaction-event-bridge/src/test/java/com/harpreetsaund/transactioneventbridge/service/MessageTransformServiceTest.java
