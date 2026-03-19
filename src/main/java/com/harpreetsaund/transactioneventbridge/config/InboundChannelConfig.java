@@ -26,7 +26,8 @@ public class InboundChannelConfig implements InitializingBean {
         return IntegrationFlow.from(Jms.messageDrivenChannelAdapter(connectionFactory).destination(inboundQueueName)) //
                 .filter(messageFilterService, "filterInboundMessage") //
                 .transform(messageTransformService, "transformToMqTransactionEvent") //
-                .channel("outboundKafkaChannel").get();
+                .channel("outboundKafkaChannel")
+                .get();
     }
 
     @Override

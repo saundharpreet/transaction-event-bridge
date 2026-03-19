@@ -90,9 +90,15 @@ public class MqTransactionEvent {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("recordType", recordType).append("transactionId", transactionId)
-                .append("accountNumber", accountNumber).append("transactionType", transactionType)
-                .append("amount", amount).append("currency", currency).append("timestamp", timestamp)
-                .append("merchantName", merchantName).append("channel", channel).toString();
+        return new ToStringBuilder(this).append("recordType", recordType)
+                .append("transactionId", transactionId)
+                .append("accountNumber", accountNumber)
+                .append("transactionType", transactionType)
+                .append("amount", amount)
+                .append("currency", currency)
+                .append("timestamp", timestamp)
+                .append("merchantName", merchantName)
+                .append("channel", channel)
+                .toString();
     }
 }

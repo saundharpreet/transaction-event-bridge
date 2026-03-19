@@ -39,7 +39,9 @@ public class MessageTransformService {
         MqTransactionEvent mqTransactionEvent = inboundMessage.getPayload();
         TransactionEvent transactionEvent = transactionEventMapper.toTransactionEvent(mqTransactionEvent);
 
-        return MessageBuilder.withPayload(transactionEvent).copyHeaders(inboundMessage.getHeaders())
-                .setHeader(KafkaHeaders.KEY, transactionEvent.getPayload().getTransactionId()).build();
+        return MessageBuilder.withPayload(transactionEvent)
+                .copyHeaders(inboundMessage.getHeaders())
+                .setHeader(KafkaHeaders.KEY, transactionEvent.getPayload().getTransactionId())
+                .build();
     }
 }

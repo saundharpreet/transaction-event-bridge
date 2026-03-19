@@ -38,7 +38,8 @@ class MessageTransformServiceTest {
         // Arrange
         MqTransactionEvent expectedEvent = createTestMqTransactionEvent();
         Message<String> inboundMessage = MessageBuilder.withPayload(testPayload)
-                .setHeader("originalHeader", "headerValue").build();
+                .setHeader("originalHeader", "headerValue")
+                .build();
 
         // Act
         Message<MqTransactionEvent> result = messageTransformService.transformToMqTransactionEvent(inboundMessage);
@@ -53,8 +54,11 @@ class MessageTransformServiceTest {
     void testTransformToMqTransactionEventPreservesHeaders() {
         // Arrange
         MqTransactionEvent expectedEvent = createTestMqTransactionEvent();
-        Message<String> inboundMessage = MessageBuilder.withPayload(testPayload).setHeader("header1", "value1")
-                .setHeader("header2", "value2").setHeader("header3", 123).build();
+        Message<String> inboundMessage = MessageBuilder.withPayload(testPayload)
+                .setHeader("header1", "value1")
+                .setHeader("header2", "value2")
+                .setHeader("header3", 123)
+                .build();
 
         // Act
         Message<MqTransactionEvent> result = messageTransformService.transformToMqTransactionEvent(inboundMessage);
@@ -73,7 +77,8 @@ class MessageTransformServiceTest {
         TransactionEvent expectedEvent = createTestTransactionEvent();
 
         Message<MqTransactionEvent> inboundMessage = MessageBuilder.withPayload(mqEvent)
-                .setHeader("originalHeader", "headerValue").build();
+                .setHeader("originalHeader", "headerValue")
+                .build();
 
         // Act
         Message<TransactionEvent> result = messageTransformService.transformToTransactionEvent(inboundMessage);
@@ -106,8 +111,10 @@ class MessageTransformServiceTest {
         MqTransactionEvent mqEvent = createTestMqTransactionEvent();
         TransactionEvent expectedEvent = createTestTransactionEvent();
 
-        Message<MqTransactionEvent> inboundMessage = MessageBuilder.withPayload(mqEvent).setHeader("header1", "value1")
-                .setHeader("header2", "value2").build();
+        Message<MqTransactionEvent> inboundMessage = MessageBuilder.withPayload(mqEvent)
+                .setHeader("header1", "value1")
+                .setHeader("header2", "value2")
+                .build();
 
         // Act
         Message<TransactionEvent> result = messageTransformService.transformToTransactionEvent(inboundMessage);
